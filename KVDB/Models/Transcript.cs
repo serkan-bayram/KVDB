@@ -15,4 +15,13 @@ namespace KVDB.Models
         public required virtual Episode Episode { get; set; }
         //This is the navigation property.It provides a way to navigate from a Transcript entity to its associated Episode entity.
     }
+
+    // transcript.json has the following structure
+    public class TranscriptLine
+    {
+        public required string Text { get; set; }
+        public decimal Start { get; set; }
+        public decimal Duration { get; set; }
+    }
+
 }
