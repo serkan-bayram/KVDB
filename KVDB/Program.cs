@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using KVDB.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<KVDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("KVDBContext") ?? throw new InvalidOperationException("Connection string 'KVDBContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

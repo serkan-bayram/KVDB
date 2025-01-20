@@ -5,8 +5,10 @@ import os
 
 
 def download_video(VIDEO_ID):
-    YouTube(
-        f'https://youtu.be/{VIDEO_ID}').streams.first().download(f"files/{VIDEO_ID}")
+    yt = YouTube(
+        f'https://youtu.be/{VIDEO_ID}')
+
+    yt.streams.first().download(f"files/{VIDEO_ID}")
 
 
 def download_captions(VIDEO_ID):
@@ -15,7 +17,7 @@ def download_captions(VIDEO_ID):
 
     json_transcript = json.dumps(transcript)
 
-    with open(f"files/{VIDEO_ID}/transcript.json", "w") as f:
+    with open(f"files/{VIDEO_ID}/transcript.json", "w", encoding="utf-8") as f:
         f.write(json_transcript)
 
 
