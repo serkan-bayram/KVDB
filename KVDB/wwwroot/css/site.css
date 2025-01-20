@@ -15,4 +15,46 @@
 
 .search-form {
     margin-top: 6em;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}
+
+video {
+    width: 400px;
+    height: 200px;
+    object-fit: fill;
+}
+
+.videos-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding-top: 5em;
+    gap: 2em;
+}
+
+.video-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-button {
+    width: 100px;
+    border-radius: .5em;
+    border: none;
+    background-color: black;
+    color: white;
+    transition: all .25s ease-in-out;
+}
+
+.search-button:hover{
+
+    opacity: .7;
+}
+
+.found-count {
+    margin-left: auto;
+    width: fit-content;
+    margin-right: 1em;
+    margin-top: .5em;
 }

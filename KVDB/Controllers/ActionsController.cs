@@ -3,10 +3,12 @@ using KVDB.Data;
 using KVDB.Helpers;
 using KVDB.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 
 namespace KVDB.Controllers
 {
-  
+
     public class ActionsController : Controller
     {
 
@@ -16,9 +18,10 @@ namespace KVDB.Controllers
         {
             _context = context;
         }
-   
+
         // Files are episodes and transcripts
         // This api saves transcripts and episodes to the database
+        // TODO: This should be POST
         public async Task<string> HandleFiles()
         {
             // TODO: We should use relative paths
@@ -89,6 +92,29 @@ namespace KVDB.Controllers
             }
 
             return "ok";
+        }
+
+        public async Task<IActionResult> Play(int episodeId)
+        {
+
+            var episode = await _context.Episode.FindAsync(episodeId);
+
+            if (episode == null)
+            {
+                return NotFound();
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files", episode.YoutubeId, episode.Title);
+
+            Console.WriteLine("filepath: ", filePath);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                var fileBytes = System.IO.File.ReadAllBytes(filePath);
+                return File(fileBytes, "video/mp4");
+            }
+
+            return NotFound();
         }
     }
 }

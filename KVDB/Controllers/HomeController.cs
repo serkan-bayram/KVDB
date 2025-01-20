@@ -1,21 +1,44 @@
 using System.Diagnostics;
+using KVDB.Data;
 using KVDB.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KVDB.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly KVDBContext _context;
+
+        public HomeController(KVDBContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View();
+            if (_context.Transcript == null)
+            {
+                throw new Exception("Transcript table is empty");
+            }
+
+
+            // Select all entries
+            var transcripts = from t in _context.Transcript
+                              select t;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                transcripts = transcripts.Where(s => s.Text.ToUpper().Contains(searchString.ToUpper()));
+            }
+            else
+            {
+                return View();
+            }
+
+            return View(await transcripts.ToListAsync());
         }
 
 

@@ -1,9 +1,60 @@
-﻿@{
+﻿@model IEnumerable<KVDB.Models.Transcript>
+
+@{
 	ViewData["Title"] = "Home Page";
 }
 
-<form class="search-form">
+<div>
 
-	<input class="search-input" name="search" placeholder="Bir replik arat..." />
+	
 
-</form>
+	<div>
+		<form class="search-form" asp-controller="Home" asp-action="Index" method="GET">
+			<input class="search-input" name="SearchString" placeholder="Bir replik arat..." />
+			<button type="submit" class="search-button">Bul</button>
+		</form>
+
+		<div class="found-count">
+			@Model.Count() sonuç bulundu.
+		</div>
+
+	</div>
+
+
+
+
+	<div class="videos-container">
+
+		@if (Model != null && Model.Any())
+		{
+			@foreach (var item in Model)
+			{
+				<div class="video-container">
+					
+
+					<video controls>
+						<source src="@Url.Action("Play", "Actions", new { episodeId = item.EpisodeId })" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
+
+					<div>
+						Replik: @Html.DisplayFor(modelItem => item.Text)
+						</div>
+					<div>
+						YoutubeLink: <a href="https://youtube.com/">https://youtube.com/</a>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<div>Video bulunamadı.</div>
+		}
+
+	</div>
+
+
+
+</div>
+
+
