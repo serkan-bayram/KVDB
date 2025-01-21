@@ -28,7 +28,7 @@ video {
 .videos-container {
     display: grid;
     grid-template-columns: auto auto;
-    padding-top: 5em;
+    padding-top: 2em;
     gap: 2em;
     margin-bottom: 2em;
 }
@@ -59,4 +59,10 @@ video {
 .pagination {
     display: flex;
     gap: 1em;
+}
+
+.lucky-form{
+    margin-inline: auto;
+    width: fit-content;
+    margin-top:2em;
 }

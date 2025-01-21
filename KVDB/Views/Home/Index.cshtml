@@ -14,9 +14,6 @@
 			<input value="1" name="page" type="hidden" /> 
 			<button type="submit" class="search-button">Bul</button>
 		</form>
-
-		
-
 	</div>
 
 	<div style="display:flex;justify-content:space-between;margin-top:2em;">
@@ -40,6 +37,12 @@
 		</div>
 	</div>
 
+	<form class="lucky-form" asp-controller="Home" asp-action="Index" method="GET">
+		<input value="" name="SearchString" type="hidden"/>
+		<input value="1" name="page" type="hidden" />
+		<input value="true" name="isRandom" type="hidden" />
+		<button>Kendimi Şanslı Hissediyorum</button>
+	</form>
 
 	<div class="videos-container">
 
@@ -51,7 +54,7 @@
 					@item.Episode.Title.Substring(0, item.Episode.Title.Length >= 50 ? 50 : item.Episode.Title.Length)...
 				</div>
 
-				<video data-transcript-id="@item.Id" data-start-time="@item.Start" controls>
+				<video autoplay="@(Model.isRandom ? true : false)" data-transcript-id="@item.Id" data-start-time="@item.Start" controls>
 					<source src="https://localhost:7162/videos/@item.Episode.YoutubeId/@item.Episode.Title" type="video/mp4">
 					Your browser does not support the video tag.
 				</video>

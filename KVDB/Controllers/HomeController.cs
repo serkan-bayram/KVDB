@@ -20,7 +20,7 @@ namespace KVDB.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString, int page)
+        public async Task<IActionResult> Index(string searchString, int page, bool isRandom = false)
         {
             if (_context.Transcript == null)
             {
@@ -28,11 +28,7 @@ namespace KVDB.Controllers
             }
 
 
-            // Select all entries
-            var transcripts = from t in _context.Transcript
-                              select t;
-
-            if (String.IsNullOrEmpty(searchString))
+            if (String.IsNullOrEmpty(searchString) && !isRandom)
             {
                 return View(new Search
                 {
@@ -41,6 +37,17 @@ namespace KVDB.Controllers
                 });
             }
 
+            // Select all entries
+            var transcripts = from t in _context.Transcript
+                              select t;
+
+            if (isRandom)
+            {
+                var randomTranscript = await transcripts.Include(s => s.Episode).OrderBy(s => Guid.NewGuid()).Take(1).ToListAsync();
+
+                return View(new Search { ItemsFound = 1, TranscriptsList = randomTranscript, CurrentPage = 1, SearchString = "", isRandom = true });
+            }
+            
             var pageSize = 20;
 
             var baseQuery = transcripts.Include(s => s.Episode).Where(s => s.Text.ToUpper().Contains(searchString.ToUpper()));
@@ -52,7 +59,7 @@ namespace KVDB.Controllers
 
             var viewModel = new Search 
             { ItemsFound = transcriptsCount, TranscriptsList = transcriptsList, 
-                CurrentPage = page, SearchString = searchString };
+                CurrentPage = page, SearchString = searchString, isRandom = isRandom };
 
             return View(viewModel);
         }
@@ -60,8 +67,6 @@ namespace KVDB.Controllers
         [HttpPost]
         public IActionResult Download(double from, double to, string videoFile)
         {
-            Console.WriteLine(from + " " + to);
-
             var videoFilePath = Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files", videoFile);
 
             var tempFilePath = Path.GetTempFileName().Split("\\");
@@ -77,7 +82,6 @@ namespace KVDB.Controllers
             //Kullanıcıya yanıt olarak stream'i gönder
             return File(fileStream, "video/mp4", "edited-video.mp4");
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

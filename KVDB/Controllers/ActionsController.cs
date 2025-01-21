@@ -25,8 +25,7 @@ namespace KVDB.Controllers
         // TODO: This should be POST
         public async Task<string> HandleFiles()
         {
-            // TODO: We should use relative paths
-            var filesPath = "C:\\Users\\Serkan\\Programming\\KVDB\\KVDB\\PythonScripts\\files\\";
+            var filesPath = Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files");
 
             if (!Directory.Exists(filesPath))
             {

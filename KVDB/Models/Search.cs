@@ -5,6 +5,8 @@
             public int ItemsFound { get; set; }
             public List<Transcript> TranscriptsList { get; set; }
             public int CurrentPage { get; set; }    
-            public string SearchString { get; set; }    
+            public string SearchString { get; set; }   
+        
+            public bool isRandom {get; set; }   
     }
 }
