@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FFMpegCore;
-using FFMpegCore.Pipes;
 
 namespace KVDB.Controllers
 {
+
+
     public class HomeController : Controller
     {
 
@@ -19,7 +20,7 @@ namespace KVDB.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int page)
         {
             if (_context.Transcript == null)
             {
@@ -33,14 +34,27 @@ namespace KVDB.Controllers
 
             if (String.IsNullOrEmpty(searchString))
             {
-                return View(new List<Transcript>());
+                return View(new Search
+                {
+                    ItemsFound = 0,
+                    TranscriptsList = new List<Transcript>()
+                });
             }
 
-            transcripts = transcripts.Include(s => s.Episode).Where(s => s.Text.ToUpper().Contains(searchString.ToUpper()));
+            var pageSize = 20;
 
-            var transcriptsList = await transcripts.ToListAsync();
+            var baseQuery = transcripts.Include(s => s.Episode).Where(s => s.Text.ToUpper().Contains(searchString.ToUpper()));
 
-            return View(transcriptsList);
+            var pagedTranscripts = baseQuery.Skip((page - 1) * pageSize).Take(pageSize);
+
+            var transcriptsCount = await baseQuery.CountAsync();
+            var transcriptsList = await pagedTranscripts.ToListAsync();
+
+            var viewModel = new Search 
+            { ItemsFound = transcriptsCount, TranscriptsList = transcriptsList, 
+                CurrentPage = page, SearchString = searchString };
+
+            return View(viewModel);
         }
 
         [HttpPost]

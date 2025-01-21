@@ -30,6 +30,7 @@ video {
     grid-template-columns: auto auto;
     padding-top: 5em;
     gap: 2em;
+    margin-bottom: 2em;
 }
 
 .video-container {
@@ -52,7 +53,10 @@ video {
 }
 
 .found-count {
-    margin-inline: auto;
     width: fit-content;
-    margin-top: .5em;
+}
+
+.pagination {
+    display: flex;
+    gap: 1em;
 }

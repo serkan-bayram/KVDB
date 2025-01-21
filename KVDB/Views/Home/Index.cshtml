@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KVDB.Models.Transcript>
+﻿@model KVDB.Models.Search
 
 @{
 	ViewData["Title"] = "Anasayfa";
@@ -11,19 +11,39 @@
 	<div>
 		<form class="search-form" asp-controller="Home" asp-action="Index" method="GET">
 			<input class="search-input" name="SearchString" placeholder="Bir replik arat..." />
+			<input value="1" name="page" type="hidden" /> 
 			<button type="submit" class="search-button">Bul</button>
 		</form>
 
-		<div class="found-count">
-			@Model.Count() sonuç bulundu.
+		
+
+	</div>
+
+	<div style="display:flex;justify-content:space-between;margin-top:2em;">
+		<div class="pagination">
+			@if (Model.ItemsFound > 0)
+			{
+				@if (Model.CurrentPage > 1)
+				{
+					<a href="@Url.Action("Index", "Home", new { SearchString = Model.SearchString, page = Model.CurrentPage - 1 })">&lt; Önceki</a>
+				}
+				@if (Model.CurrentPage < Model.ItemsFound / 20)
+				{
+					<a href="@Url.Action("Index", "Home", new { SearchString = Model.SearchString, page = Model.CurrentPage + 1 })">Sonraki &gt;</a>
+				}
+			}
 		</div>
 
+
+		<div class="found-count">
+			@Model.ItemsFound sonuç bulundu.
+		</div>
 	</div>
 
 
 	<div class="videos-container">
 
-		@foreach (var item in Model)
+		@foreach (var item in Model.TranscriptsList)
 		{
 			<div class="video-container">
 
@@ -32,7 +52,7 @@
 				</div>
 
 				<video data-transcript-id="@item.Id" data-start-time="@item.Start" controls>
-					<source src="@Url.Action("Play", "Actions", new { episodeId = item.EpisodeId })" type="video/mp4">
+					<source src="https://localhost:7162/videos/@item.Episode.YoutubeId/@item.Episode.Title" type="video/mp4">
 					Your browser does not support the video tag.
 				</video>
 

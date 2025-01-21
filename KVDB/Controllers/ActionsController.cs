@@ -60,7 +60,8 @@ namespace KVDB.Controllers
 
                 if (transcriptPath == null || episodePath == null)
                 {
-                    return "Transcript or episode file not found";
+                    Console.WriteLine("Transcript or episode file not found: " + episodePath);
+                    continue;
                 }
 
                 var youtubeId = episode.Split("\\").Last();
@@ -70,15 +71,13 @@ namespace KVDB.Controllers
 
                 if (isAlreadySaved)
                 {
-                    return "Episode already saved";
+                   continue;
                 }
 
                 var newEpisode = new Episode { Title = title, YoutubeId = youtubeId };
 
                 _context.Episode.Add(newEpisode);
                 await _context.SaveChangesAsync();
-
-                Console.WriteLine(transcriptPath);
 
                 List<TranscriptLine> transcriptLines = JsonFileReader.Read<List<TranscriptLine>>(transcriptPath);
 
@@ -95,28 +94,5 @@ namespace KVDB.Controllers
             return "ok";
         }
 
-        public async Task<IActionResult> Play(int episodeId)
-        {
-
-            var episode = await _context.Episode.FindAsync(episodeId);
-
-            if (episode == null)
-            {
-                return NotFound();
-            }
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files", episode.YoutubeId, episode.Title);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                Response.Headers.Append("Accept-Ranges", "bytes");
-
-                return File(stream, "video/mp4", enableRangeProcessing: true);
-            }
-
-            return NotFound();
-        }
     }
 }
