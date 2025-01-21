@@ -1,11 +1,13 @@
 ﻿@model IEnumerable<KVDB.Models.Transcript>
 
 @{
-	ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Anasayfa";
 }
 
 <div>
-	
+
+	<h1 style="text-align:center;margin-block:1.5em;">Kurtlar Vadisi Database 🐺</h1>
+
 	<div>
 		<form class="search-form" asp-controller="Home" asp-action="Index" method="GET">
 			<input class="search-input" name="SearchString" placeholder="Bir replik arat..." />
@@ -25,8 +27,11 @@
 		{
 			<div class="video-container">
 
+				<div style="text-align:start">
+					@item.Episode.Title.Substring(0, item.Episode.Title.Length >= 50 ? 50 : item.Episode.Title.Length)...
+				</div>
 
-				<video onloadedmetadata="handleLoad(this, @(@item.Start - 5))" controls>
+				<video data-transcript-id="@item.Id" data-start-time="@item.Start" controls>
 					<source src="@Url.Action("Play", "Actions", new { episodeId = item.EpisodeId })" type="video/mp4">
 					Your browser does not support the video tag.
 				</video>
@@ -37,6 +42,24 @@
 				<div>
 					Youtube Link: <a target="_blank" href="https://youtube.com/watch?v=@item.Episode.YoutubeId&t=@(@item.Start)s">Linke Git</a>
 				</div>
+
+				<form class="download-form" asp-controller="Home" asp-action="Download">
+					<span data-transcript-id="@item.Id" id="currentTime">@item.Start</span>
+					<span>. saniyeden itibaren</span>
+					
+					<input data-transcript-id="@item.Id" class="startFrom" name="from" value="30" type="hidden" />
+
+					<input type="hidden" name="videoFile" value="@item.Episode.YoutubeId/@item.Episode.Title" />
+
+					<input type="number" required placeholder="Saniye" name="to"/>
+
+					saniye indir.
+					<div>
+						<button type="submit">
+							İndir
+						</button>
+					</div>
+				</form>
 			</div>
 		}
 

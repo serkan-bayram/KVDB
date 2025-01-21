@@ -95,7 +95,6 @@ namespace KVDB.Controllers
             return "ok";
         }
 
-        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> Play(int episodeId)
         {
 
