@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection.PortableExecutable;
+using System.Text.Json;
 using KVDB.Data;
 using KVDB.Helpers;
 using KVDB.Models;
@@ -94,6 +95,7 @@ namespace KVDB.Controllers
             return "ok";
         }
 
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> Play(int episodeId)
         {
 
@@ -106,12 +108,13 @@ namespace KVDB.Controllers
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files", episode.YoutubeId, episode.Title);
 
-            Console.WriteLine("filepath: ", filePath);
-
             if (System.IO.File.Exists(filePath))
             {
-                var fileBytes = System.IO.File.ReadAllBytes(filePath);
-                return File(fileBytes, "video/mp4");
+                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                Response.Headers.Append("Accept-Ranges", "bytes");
+
+                return File(stream, "video/mp4", enableRangeProcessing: true);
             }
 
             return NotFound();

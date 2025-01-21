@@ -5,9 +5,7 @@
 }
 
 <div>
-
 	
-
 	<div>
 		<form class="search-form" asp-controller="Home" asp-action="Index" method="GET">
 			<input class="search-input" name="SearchString" placeholder="Bir replik arat..." />
@@ -21,39 +19,28 @@
 	</div>
 
 
-
-
 	<div class="videos-container">
 
-		@if (Model != null && Model.Any())
+		@foreach (var item in Model)
 		{
-			@foreach (var item in Model)
-			{
-				<div class="video-container">
-					
+			<div class="video-container">
 
-					<video controls>
-						<source src="@Url.Action("Play", "Actions", new { episodeId = item.EpisodeId })" type="video/mp4">
-						Your browser does not support the video tag.
-					</video>
 
-					<div>
-						Replik: @Html.DisplayFor(modelItem => item.Text)
-						</div>
-					<div>
-						YoutubeLink: <a href="https://youtube.com/">https://youtube.com/</a>
-					</div>
+				<video onloadedmetadata="handleLoad(this, @(@item.Start - 5))" controls>
+					<source src="@Url.Action("Play", "Actions", new { episodeId = item.EpisodeId })" type="video/mp4">
+					Your browser does not support the video tag.
+				</video>
+
+				<div>
+					Bulunan Replik: @Html.DisplayFor(modelItem => item.Text)
 				</div>
-			}
-		}
-		else
-		{
-			<div>Video bulunamadı.</div>
+				<div>
+					Youtube Link: <a target="_blank" href="https://youtube.com/watch?v=@item.Episode.YoutubeId&t=@(@item.Start)s">Linke Git</a>
+				</div>
+			</div>
 		}
 
 	</div>
-
-
 
 </div>
 

@@ -29,16 +29,16 @@ namespace KVDB.Controllers
             var transcripts = from t in _context.Transcript
                               select t;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (String.IsNullOrEmpty(searchString))
             {
-                transcripts = transcripts.Where(s => s.Text.ToUpper().Contains(searchString.ToUpper()));
-            }
-            else
-            {
-                return View();
+                return View(new List<Transcript>());
             }
 
-            return View(await transcripts.ToListAsync());
+            transcripts = transcripts.Include(s => s.Episode).Where(s => s.Text.ToUpper().Contains(searchString.ToUpper()));
+
+            var transcriptsList = await transcripts.ToListAsync();
+
+            return View(transcriptsList);
         }
 
 
