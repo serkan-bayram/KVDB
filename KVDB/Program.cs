@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using KVDB.Data;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http.Features;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<KVDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("KVDBContext") ?? throw new InvalidOperationException("Connection string 'KVDBContext' not found.")));
@@ -19,16 +20,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files")),
-    
-    RequestPath = "/videos"
-});
-
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files")),
+
+//    RequestPath = "/videos"
+//});
 
 app.UseRouting();
 

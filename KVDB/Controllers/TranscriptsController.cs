@@ -59,6 +59,8 @@ namespace KVDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Text,Start,Duration,EpisodeId")] Transcript transcript)
         {
+            return NotFound();
+
             if (ModelState.IsValid)
             {
                 _context.Add(transcript);
@@ -93,6 +95,8 @@ namespace KVDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Text,Start,Duration,EpisodeId")] Transcript transcript)
         {
+            return NotFound();
+
             if (id != transcript.Id)
             {
                 return NotFound();
@@ -146,6 +150,8 @@ namespace KVDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            return NotFound();
+
             var transcript = await _context.Transcript.FindAsync(id);
             if (transcript != null)
             {

@@ -8,8 +8,6 @@ using FFMpegCore;
 
 namespace KVDB.Controllers
 {
-
-
     public class HomeController : Controller
     {
 
@@ -27,6 +25,7 @@ namespace KVDB.Controllers
                 throw new Exception("Transcript table is empty");
             }
 
+            //ViewData["BaseUrl"] = $"kvdb.serkanbayram.dev";
 
             if (String.IsNullOrEmpty(searchString) && !isRandom)
             {
@@ -43,7 +42,13 @@ namespace KVDB.Controllers
 
             if (isRandom)
             {
-                var randomTranscript = await transcripts.Include(s => s.Episode).OrderBy(s => Guid.NewGuid()).Take(1).ToListAsync();
+                int count = await transcripts.CountAsync(); // Tablodaki toplam satır sayısını al
+                int randomIndex = new Random().Next(0, count); // Rastgele bir index seç
+
+                var randomTranscript = await transcripts.Include(s => s.Episode)
+                    .Skip(randomIndex)
+                    .Take(1)
+                    .ToListAsync();
 
                 return View(new Search { ItemsFound = 1, TranscriptsList = randomTranscript, CurrentPage = 1, SearchString = "", isRandom = true });
             }
@@ -67,6 +72,8 @@ namespace KVDB.Controllers
         [HttpPost]
         public IActionResult Download(double from, double to, string videoFile)
         {
+            return View();
+
             var videoFilePath = Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files", videoFile);
 
             var tempFilePath = Path.GetTempFileName().Split("\\");

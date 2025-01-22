@@ -1,11 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Policy;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.EntityFrameworkCore;
 
 namespace KVDB.Models
 {
+    [Index(nameof(Text))]
     public class Transcript
     {
         public int Id { get; set; }
+        [MaxLength(100)]
         public required string Text { get; set; }
         public required decimal Start { get; set; }
         public required decimal Duration { get; set; }

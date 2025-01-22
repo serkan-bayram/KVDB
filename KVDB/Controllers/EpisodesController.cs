@@ -52,6 +52,8 @@ namespace KVDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,YoutubeId")] Episode episode)
         {
+            return NotFound();
+
             if (ModelState.IsValid)
             {
                 _context.Add(episode);
@@ -84,6 +86,9 @@ namespace KVDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,YoutubeId")] Episode episode)
         {
+            return NotFound();
+
+
             if (id != episode.Id)
             {
                 return NotFound();
@@ -135,6 +140,9 @@ namespace KVDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            return NotFound();
+
+
             var episode = await _context.Episode.FindAsync(id);
             if (episode != null)
             {

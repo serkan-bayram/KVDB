@@ -54,10 +54,11 @@
 					@item.Episode.Title.Substring(0, item.Episode.Title.Length >= 50 ? 50 : item.Episode.Title.Length)...
 				</div>
 
-				<video autoplay="@(Model.isRandom ? true : false)" data-transcript-id="@item.Id" data-start-time="@item.Start" controls>
-					<source src="https://localhost:7162/videos/@item.Episode.YoutubeId/@item.Episode.Title" type="video/mp4">
-					Your browser does not support the video tag.
-				</video>
+			@* 	<video autoplay="@(Model.isRandom ? true : false)" data-transcript-id="@item.Id" data-start-time="@item.Start" controls>
+					<source src="@($"/videos/{item.Episode.YoutubeId}/{item.Episode.Title}")" type="video/mp4">
+				</video> *@
+
+				<iframe  src="https://youtube.com/embed/@item.Episode.YoutubeId?start=@item.Start.ToString().Split('.')[0]"></iframe>
 
 				<div>
 					Bulunan Replik: @Html.DisplayFor(modelItem => item.Text)
@@ -66,7 +67,7 @@
 					Youtube Link: <a target="_blank" href="https://youtube.com/watch?v=@item.Episode.YoutubeId&t=@(@item.Start)s">Linke Git</a>
 				</div>
 
-				<form class="download-form" asp-controller="Home" asp-action="Download">
+			@* 	<form class="download-form" asp-controller="Home" asp-action="Download">
 					<span data-transcript-id="@item.Id" id="currentTime">@item.Start</span>
 					<span>. saniyeden itibaren</span>
 					
@@ -82,7 +83,7 @@
 							İndir
 						</button>
 					</div>
-				</form>
+				</form> *@
 			</div>
 		}
 
