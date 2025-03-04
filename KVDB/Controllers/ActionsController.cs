@@ -1,11 +1,7 @@
-﻿using System.Reflection.PortableExecutable;
-using System.Text.Json;
-using KVDB.Data;
+﻿using KVDB.Data;
 using KVDB.Helpers;
 using KVDB.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
 
 namespace KVDB.Controllers
 {
@@ -41,36 +37,26 @@ namespace KVDB.Controllers
                 var files = Directory.GetFiles(episode);
 
                 string? transcriptPath = null;
-                string? episodePath = null;
 
                 foreach (var file in files)
                 {
-
-                    if (file.Contains("transcript"))
-                    {
-                        transcriptPath = file;
-                    }
-                    else
-                    {
-                        episodePath = file;
-                    }
-
+                    transcriptPath = file;
                 }
 
-                if (transcriptPath == null || episodePath == null)
+                if (transcriptPath == null)
                 {
-                    Console.WriteLine("Transcript or episode file not found: " + episodePath);
+                    Console.WriteLine("Transcript or episode file not found: ");
                     continue;
                 }
 
                 var youtubeId = episode.Split("\\").Last();
-                var title = episodePath.Split("\\").Last();
+                var title = "Video";
 
                 var isAlreadySaved = _context.Episode.Any(Episode => Episode.YoutubeId == youtubeId);
 
                 if (isAlreadySaved)
                 {
-                   continue;
+                    continue;
                 }
 
                 var newEpisode = new Episode { Title = title, YoutubeId = youtubeId };

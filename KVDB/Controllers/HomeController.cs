@@ -43,6 +43,7 @@ namespace KVDB.Controllers
             if (isRandom)
             {
                 int count = await transcripts.CountAsync(); // Tablodaki toplam satır sayısını al
+                
                 int randomIndex = new Random().Next(0, count); // Rastgele bir index seç
 
                 var randomTranscript = await transcripts.Include(s => s.Episode)

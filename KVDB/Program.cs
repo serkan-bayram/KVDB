@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using KVDB.Data;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Http.Features;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<KVDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KVDBContext") ?? throw new InvalidOperationException("Connection string 'KVDBContext' not found.")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("KVDBContext") ?? throw new InvalidOperationException("Connection string 'KVDBContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,6 +16,12 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<KVDBContext>();
+    dbContext.Database.Migrate();
 }
 
 app.UseHttpsRedirection();
