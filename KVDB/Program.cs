@@ -1,12 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using KVDB.Data;
+using DotNetEnv;
+using KVDB.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
+var envFile = environment == "Production" ? "./.env" : "./.env.development";
+Env.TraversePath().Load(envFile);
+
+var connectionString = Env.GetString("ConnectionString") ?? throw new InvalidOperationException("Connection string 'KVDBContext' not found.");
+
 builder.Services.AddDbContext<KVDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("KVDBContext") ?? throw new InvalidOperationException("Connection string 'KVDBContext' not found.")));
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add ActionsController to the services
+builder.Services.AddScoped<ActionsController>();
 
 var app = builder.Build();
 
@@ -24,16 +37,16 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
+// Call HandleFiles on app startup
+using (var scope = app.Services.CreateScope())
+{
+    var actionsController = scope.ServiceProvider.GetRequiredService<ActionsController>();
+    await actionsController.HandleFiles();
+}
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "PythonScripts", "files")),
-
-//    RequestPath = "/videos"
-//});
 
 app.UseRouting();
 

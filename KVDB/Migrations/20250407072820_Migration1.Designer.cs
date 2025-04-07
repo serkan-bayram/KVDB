@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KVDB.Migrations
 {
     [DbContext(typeof(KVDBContext))]
-    [Migration("20250122194518_Postgres2")]
-    partial class Postgres2
+    [Migration("20250407072820_Migration1")]
+    partial class Migration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

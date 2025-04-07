@@ -49,7 +49,9 @@ namespace KVDB.Controllers
                     continue;
                 }
 
-                var youtubeId = episode.Split("\\").Last();
+                // !!!!!!! BURası windowsda \\ olmalı
+                var youtubeId = episode.Split("/").Last();
+
                 var title = "Video";
 
                 var isAlreadySaved = _context.Episode.Any(Episode => Episode.YoutubeId == youtubeId);
